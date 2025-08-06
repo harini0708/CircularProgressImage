@@ -1,0 +1,13 @@
+# JitPack configuration file
+
+# 1. Specify the Java version to use
+jdk:
+  - openjdk17
+
+# 2. Commands to run before the build
+before_install:
+  - echo "Preparing the build environment..."
+
+# 3. The main build command
+install:
+  - ./gradlew clean :circular-progress-image:publishToMavenLocal
