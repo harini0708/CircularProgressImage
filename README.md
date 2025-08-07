@@ -152,6 +152,9 @@ Row {
     Button(onClick = { progressState.moveTo(1.0f) }) { Text("100%") }
 }
 ```
+
+For more detailed examples, including interactive drag controls and infinite animations, please check out the app module in this repository.
+
 ## API Reference
 
 This library provides two main composables: a stateless `CircularProgressImage` for direct control, and a stateful `AnimatedCircularProgressImage` for easy animations.
