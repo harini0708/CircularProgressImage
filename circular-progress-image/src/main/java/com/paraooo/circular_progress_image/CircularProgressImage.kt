@@ -1,5 +1,6 @@
 package com.paraooo.circular_progress_image
 
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.tween
@@ -174,18 +175,21 @@ fun CircularProgressImage(
         Image(
             painter = painter,
             contentDescription = contentDescription,
-            modifier = modifier.matchParentSize().clip(
-                BorderSegmentShape(
-                    startAngleDegrees = startAngle,
-                    sweepAngleDegrees = maxSweepAngle * progress.coerceIn(0f, 1f)
-                )
-            ),
+            modifier = modifier
+                .matchParentSize()
+                .clip(
+                    BorderSegmentShape(
+                        startAngleDegrees = startAngle,
+                        sweepAngleDegrees = maxSweepAngle * progress.coerceIn(0f, 1f)
+                    )
+                ),
             colorFilter = if (color != null) ColorFilter.tint(color, BlendMode.SrcIn) else null,
             contentScale = ContentScale.Crop
         )
     }
 
 }
+
 
 /**
  * A [Shape] implementation that clips content to a circular segment (arc) defined by a start angle and sweep angle.
@@ -212,21 +216,7 @@ class BorderSegmentShape(
         layoutDirection: LayoutDirection,
         density: Density
     ): Outline {
-        val path: Path
-
-        if (sweepAngleDegrees <= 180f) {
-            path = createConvexSegmentPath(size, startAngleDegrees, sweepAngleDegrees)
-        } else {
-            val fullRectPath = Path().apply { addRect(Rect(Offset.Zero, size)) }
-
-            val emptyStartAngle = startAngleDegrees + sweepAngleDegrees
-            val emptySweepAngle = 360f - sweepAngleDegrees
-            val emptyPath = createConvexSegmentPath(size, emptyStartAngle, emptySweepAngle)
-
-            path = Path().apply {
-                op(fullRectPath, emptyPath, PathOperation.Difference)
-            }
-        }
+        val path = createConvexSegmentPath(size, startAngleDegrees, sweepAngleDegrees)
         return Outline.Generic(path)
     }
 
@@ -241,6 +231,7 @@ class BorderSegmentShape(
     private fun createConvexSegmentPath(size: Size, startAngle: Float, sweepAngle: Float): Path {
         return Path().apply {
             if (abs(sweepAngle) < 0.01f) return@apply
+
 
             val center = Offset(size.width / 2f, size.height / 2f)
             val endAngle = startAngle + sweepAngle
@@ -258,13 +249,29 @@ class BorderSegmentShape(
                 Offset(0f, 0f)         // 3: Top-Left
             )
 
-            val startSide = getSide(size, startPoint)
-            val endSide = getSide(size, endPoint)
+            val startSide = if(sweepAngle >= 0) getSide(size, startPoint) else (getSide(size, startPoint) + 3) % 4
+            val endSide = if(sweepAngle >= 0) getSide(size, endPoint) else (getSide(size, endPoint) + 3) % 4
 
             var currentSide = startSide
             while(currentSide != endSide) {
                 lineTo(corners[currentSide].x, corners[currentSide].y)
-                currentSide = (currentSide + 1) % 4
+                if (sweepAngle >= 0) {
+                    currentSide = (currentSide + 1) % 4
+                } else {
+                    currentSide = if(currentSide - 1 < 0) 3 else currentSide - 1
+                }
+
+            }
+
+            if(startSide == endSide && abs(sweepAngle) >= 180F) {
+                for(i in 0..3){
+                    lineTo(corners[currentSide].x, corners[currentSide].y)
+                    if (sweepAngle >= 0) {
+                        currentSide = (currentSide + 1) % 4
+                    } else {
+                        currentSide = if(currentSide - 1 < 0) 3 else currentSide - 1
+                    }
+                }
             }
 
             lineTo(endPoint.x, endPoint.y)
