@@ -19,27 +19,97 @@ This android project is a highly customizable circular progress image component 
 - **Stateless Control:** Provides a simple, stateless composable for direct progress manipulation.
 - **Robust & Edge-Case Ready:** Smoothly handles all progress values from 0% to 100% without visual glitches.
 
-## Setup
+## Setup / Installation
 
-#### 1. Add JitPack repository
-Add the JitPack repository to your root `build.gradle.kts` (or `settings.gradle`):
+#### 1. Add JitPack Repository
+
+First, add the JitPack repository to your project. This allows Gradle to find and download the library. Choose the file that corresponds to your project's setup style.
+
+<details>
+<summary><b>Kotlin DSL (settings.gradle.kts)</b> - Recommended for new projects</summary>
+
 ```kotlin
-// settings.gradle
+// settings.gradle.kts
+
 dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        ...
-        maven { url 'https://jitpack.io' }
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") } // Add this line
     }
 }
 ```
+</details>
 
-#### 2. Add the dependency
-Add the dependency to your app's `build.gradle.kts`:
+<details>
+<summary><b>Groovy DSL (settings.gradle)</b> - For older projects</summary>
+
+```groovy
+// settings.gradle
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' } // Add this line
+    }
+}
+```
+</details>
+
+---
+
+#### 2. Add the Library Dependency
+
+Next, add the library dependency to your module's `build.gradle.kts` (or `build.gradle`) file.
+
+<details>
+<summary><b>Using Version Catalog (Recommended)</b></summary>
+
+1.  Add the library alias to your `gradle/libs.versions.toml` file.
+
+    ```toml
+    [versions]
+    # Use a descriptive name for the version key
+    circularProgressImage = "1.0.2" # Replace with the latest version
+
+    [libraries]
+    # Use a descriptive name for the library alias
+    circularProgressImage = { group = "com.github.PARAOOO", name = "CircularProgressImage", version.ref = "circularProgressImage" }
+    ```
+
+2.  Add the dependency in your module's `build.gradle.kts`. Gradle automatically handles the alias.
+
+    ```kotlin
+    dependencies {
+        implementation(libs.circularProgressImage)
+    }
+    ```
+</details>
+
+<details>
+<summary><b>Kotlin DSL (build.gradle.kts)</b></summary>
+
 ```kotlin
 dependencies {
+    // Replace "1.0.2" with the latest version from JitPack
+    implementation("com.github.PARAOOO:CircularProgressImage:1.0.2")
+}
+```
+</details>
+
+<details>
+<summary><b>Groovy DSL (build.gradle)</b></summary>
+
+```groovy
+dependencies {
+    // Replace "1.0.2" with the latest version from JitPack
     implementation 'com.github.PARAOOO:CircularProgressImage:1.0.2'
 }
 ```
+</details>
 
 ## Usage
 
