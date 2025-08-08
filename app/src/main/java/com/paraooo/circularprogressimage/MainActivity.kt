@@ -93,6 +93,19 @@ fun ExampleScreen() {
                 Modifier.weight(1F)
             )
         }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.Top
+        ) {
+            Example5(
+                Modifier.weight(1F)
+            )
+            Example6(
+                Modifier.weight(1F)
+            )
+        }
     }
 }
 
@@ -236,6 +249,76 @@ fun Example4(
                     }
                 )
             },
+        )
+    }
+}
+
+@Composable
+fun Example5(
+    modifier: Modifier = Modifier
+) {
+
+    val infiniteTransition = rememberInfiniteTransition(label = "infinite-rotation")
+
+    val example3Progress by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "progress"
+    )
+
+    Column(
+        modifier = modifier.padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text("Counter-Clockwise")
+
+        CircularProgressImage(
+            painter = painterResource(id = R.drawable.bg_todolist),
+            backgroundColor = Color.LightGray,
+            progress = example3Progress,
+            modifier = Modifier.size(160.dp),
+            maxSweepAngle = -360F
+        )
+    }
+}
+
+@Composable
+fun Example6(
+    modifier: Modifier = Modifier
+) {
+
+    val infiniteTransition = rememberInfiniteTransition(label = "infinite-rotation")
+
+    val example3Progress by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "progress"
+    )
+
+    Column(
+        modifier = modifier.padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text("Part Of Circle Example")
+
+        CircularProgressImage(
+            painter = painterResource(id = R.drawable.bg_todolist),
+            color = Color.DarkGray,
+            backgroundColor = Color.LightGray,
+            progress = example3Progress,
+            modifier = Modifier.size(160.dp),
+            startAngle = 225F,
+            maxSweepAngle = 280F
         )
     }
 }

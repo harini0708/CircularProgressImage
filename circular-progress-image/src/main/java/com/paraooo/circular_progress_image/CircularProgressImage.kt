@@ -175,7 +175,7 @@ fun CircularProgressImage(
         Image(
             painter = painter,
             contentDescription = contentDescription,
-            modifier = modifier
+            modifier = Modifier
                 .matchParentSize()
                 .clip(
                     BorderSegmentShape(
